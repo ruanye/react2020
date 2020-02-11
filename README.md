@@ -39,3 +39,16 @@ document.createTextNode 创建文本节点
 9. { } 必须有返回值 
 ## 编程单词 
  Invalid  无效的    property 属性  dangerously 危险的 
+
+
+##  函数组件hooks  react 16.8版本之前   
+只在顶层调⽤Hooks
+1. Hooks的调⽤尽量只在顶层作⽤域进⾏调⽤ 不要在循环，条件或者是嵌套函数中调⽤Hook，否则可能会⽆ 法确保每次组件渲染时都以相同的顺序调⽤Hook 
+2. 只在函数组件调⽤Hooks
+
+React Hooks⽬前只⽀持函数组件，所以⼤家别在class组件或 者普通的函数⾥⾯调⽤Hook钩⼦函数 React Hooks的应⽤场景如下
+
+1. 函数组件 
+2. ⾃定义hooks 
+
+函数组件 ⾃定义hooks 在未来的版本React Hooks会扩展到class组件，但是现阶段不能 再class⾥使⽤
