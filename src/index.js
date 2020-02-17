@@ -1,36 +1,46 @@
-import React,{useState,useEffect} from 'react'
+import React ,{createRef,useRef,useState,forwardRef,useImperativeHandle}from 'react'
 import {render} from 'react-dom'
-//useEffect 副作用 dom操作 定时器 
-// 统计我点击了多少次  显示到title上 
-//1. useEffect里的函数会在组件挂载完成后，或者组件更新完成后进行调用
+// 
+function Children(props,Pref){
+	let inputref = useRef() // 1 
+	let input2ref = useRef()
+	//使用命令式操作  useImperativeHandle 可以选择性暴露给父组件一些属性  
+	useImperativeHandle(Pref,()=>{
+		//返回的对象就是我们说的ref的current 
+		 return {
+			 
+        F(){
+				  inputref.current.focus() 	
+				},
+				changeV(text){
+          input2ref.current.value =  text
+				}
+		 }
+		}) 
+    return <>
+	        <input ref = {inputref}/>
+					<input ref={input2ref} ></input>
+			</>
+}
+let ForwardChild= forwardRef(Children) //返回是一个包装过的组件 
+function Parent(){
+  let Pref = useRef() 
+	function Setval(){
+		Pref.current.changeV('这是改值的ref')
+	}
+	function getFocus(){
+		 Pref.current.F()
+		//Pref.current.inputref.current.focus()
+	}
+  return  <>
+	        {/**Pref 是通过 ForwardChild传递过去的*/}
+	         <ForwardChild ref={Pref}></ForwardChild>
+						<span></span>
+						<button onClick = {Setval}>点击设置值</button>
+						<button onClick = {getFocus}>获取焦点</button>
+	     </>
+}
 
-function App(){
-	let [number,addN] = useState(0)
-	useEffect(()=>{
-		document.title =`我点击了${number}次` 
-	})
-   return <> 
-	          <span>{number}</span>
-						<button onClick={()=>addN(number+1)}>点击点击</button>
-	        </>
-}
-// 清理副作用 有2种办法(用一个即可)  1 返回一个清理函数  2 使用依赖项 
-function App1(){
-	let [number,addN] = useState(0)
-	// 依赖项没有变话 useEffect就不会重新执行 
-	useEffect(()=>{
-		let timer =setInterval(() => {
-			 addN(number =>number+1)
-		}, 1000)
-		// useEffect会返回一个清理函数 当组件卸载的时候进行清理 
-		// return ()=>{
-    //    clearInterval(timer)
-		// }
-	},[]
-)
-    return <> 
-	          <span>{number}</span>
-						<button onClick={()=>addN(number+1)}>点击点击</button>
-	        </>
-}
-render(<App1></App1>,window.root)
+
+render(<Parent/>,window.root)
+
