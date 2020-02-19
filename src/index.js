@@ -1,36 +1,36 @@
-import React, { Component } from 'react'
+//usereducer 的logger 中间件 
+import React,{useReducer,useEffect} from 'react'
 import {render} from 'react-dom'
-// 虚拟dom好处只会更新改变的地方 
-export default class Coutner extends Component {
-	constructor(props){
-		 super(props)
-     this.state = {timer:new Date().toLocaleTimeString()}
-	}
-	// component 组件  Did 已完成 Mount 挂架  组件挂载完成 
-	componentDidMount(){ // 只会执行一次 
-    // ajax请求 异步处理 
-	  this.time  = setInterval(() => {
-			this.setState({timer:new Date().toLocaleTimeString()})
-		},1000);
-	}
-	// wiil 将要 un+加在一个单词上面标示取反  卸载 
-	componentWillUnmount(){
-     clearInterval(this.time)
-	}
-	render() {
-		return (
-			
-			<div>
-				{this.state.timer}
-			</div>
-		)
+let initialState = {
+	number:1
+}
+function reducer(state={},action){
+  switch(action.type){
+		case 'ADD':
+		return {number:state.number+1}
+		default:
+		break
 	}
 }
-function Coutner2(){
-	  return <>
-		         Coutner2
-		       </>
+// 日志中间件 
+function useLogger(reduer,initialState){
+	let [state,dispacth] = useReducer(reduer,initialState) //这个dispath 是我们真正要派发的dispach 
+	function logdispatch(action){
+    console.log(state,'老状态')
+		dispacth(action)
+	}
+  useEffect(() => {
+	   console.log(state,'新状态')
+	}, [state])
+  return [state,logdispatch]
 }
-render(<><Coutner/> <Coutner2/></>,window.root)
-
-
+ function Reducecompont() {
+	 const [state, logdispatch] = useLogger(reducer, initialState)
+	return (
+		<div>
+			  <span >{state.number}</span>
+				<button onClick={()=>logdispatch({type:'ADD'})}>点击加一</button>
+		</div>
+	)
+}
+render(<Reducecompont></Reducecompont>,window.root)
