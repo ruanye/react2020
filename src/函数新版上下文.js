@@ -1,8 +1,7 @@
-import React, { Component,createContext,useContext } from 'react'
+import React, { Component,createContext } from 'react'
 import {render} from 'react-dom'
-// 在项目不建议使用上下文  容易造成混乱 
-// 函数不能使用静态属性 函数没有this
-// 函数使用上下文 
+
+// class 新版本上下文 
 //1 创建一个上下文对象 返回2个组件 Provider(提供者)  Consumer(消费者)
 let myContext = createContext() 
 class Page extends Component {
@@ -15,8 +14,7 @@ class Page extends Component {
 			// 2 使用Provider组件 定义value值  用来传递上下文的的对象
 			<myContext.Provider value={{color:"red"}}>
 				<Content>
-					 <Tittle></Tittle>
-					 <Header></Header>
+					<Tittle></Tittle>
 				</Content>
 			 	<Content>
 				  <Header></Header>
@@ -51,10 +49,11 @@ class Tittle extends Component {
 		)
 	}
 }
-
-// 函数组件使用上下文方式 1  
-function Header1() {
-    return (
+// 3 新版上下文Consumer方式使用  返回一个函数 value值是函数的参数 
+class Header extends Component {
+  // static contextType = myContext
+	render() {
+		return (
 			<myContext.Consumer>
 			   {value=>{
 					 return <div style={{color:value.color}}>
@@ -62,15 +61,8 @@ function Header1() {
 			     </div>
 				 }}
 			</myContext.Consumer>
-			)
-}
-// 函数组件使用上下文方式 2 使用hooks 钩子函数 
-function Header() {
-	  let ctx = useContext(myContext) // useContext参数就是我们定义的上下文对象 
-		return <div style ={{color:ctx.color}}>
-				      我是头部组件
-					  </div>
-			
+		)
+	}
 }
 
 
