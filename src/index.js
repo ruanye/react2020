@@ -1,79 +1,50 @@
-import React, { Component,createContext,useContext } from 'react'
-import {render} from 'react-dom'
-// 在项目不建议使用上下文  容易造成混乱 
-// 函数不能使用静态属性 函数没有this
-// 函数使用上下文 
-//1 创建一个上下文对象 返回2个组件 Provider(提供者)  Consumer(消费者)
-let myContext = createContext() 
-class Page extends Component {
-	constructor(){
-		super()
-		this.state = {color:'green'}
+// purecomponent
+import React, { Component,PureComponent,createRef } from 'react'
+import {render}  from 'react-dom'
+// PureComponent 对比组件前后状态 进行的是浅比较 只比较对象的第一层 
+class My extends PureComponent {
+	constructor(props){
+		 super(props)
+		 this.inref = createRef()
+		 this.state = {count:{number:0},tiltle:'标题1'}
 	}
-  render() {
-		return (
-			// 2 使用Provider组件 定义value值  用来传递上下文的的对象
-			<myContext.Provider value={{color:"red"}}>
-				<Content>
-					 <Tittle></Tittle>
-					 <Header></Header>
-				</Content>
-			 	<Content>
-				  <Header></Header>
-				</Content>
-			</myContext.Provider>
-		)
+	add = ()=>{
+		let inval =parseFloat(this.inref.current.value)   
+    this.setState({count:{...this.state.count,number:this.state.count.number+inval}})
 	}
-}
-class Content extends Component {
 	render() {
+		console.log('render')
 		return (
 			<div>
-				  {
-					 //this.props.children 表示所有子组件 
-					}
-			 		{this.props.children}
+				  {this.state.count.number}
+					<input ref ={this.inref}/>
+				  <button onClick={this.add}>加</button>
+					<Tiltle1 tiltle ={this.state.tiltle}></Tiltle1>
 			</div>
 		)
 	}
 }
-
-class Tittle extends Component {
-    //3. 拿到上下文对象 定义一个静态属性等于我们创建的上下文对象 就可以拿到this.context这个上下文对象了 
-	static contextType = myContext
-	render() {
-		return (
-			<>
-			<div style={{color:this.context.color}}>
-				  我是标题组件
-			</div>
-			</>
-		)
-	}
+function Tiltle(props){
+	  console.log(' tiltle  render')
+   return <div>{props.tiltle}</div>
+}
+function memo1(FunComponnt){
+   return class extends PureComponent{
+		  render(){
+				return  <FunComponnt {...this.props}></FunComponnt>
+			}
+	 }
+}
+//一个函数  返回一个新的把组件作为参数组件   叫做高阶组件  
+function memo2(funComponnt){
+    class My extends PureComponent{
+		  render(){
+				return funComponnt(this.props)
+			}
+	 }
+	 return My
 }
 
-// 函数组件使用上下文方式 1  
-function Header1() {
-    return (
-			<myContext.Consumer>
-			   {value=>{
-					 return <div style={{color:value.color}}>
-				  我是头部组件
-			     </div>
-				 }}
-			</myContext.Consumer>
-			)
-}
-// 函数组件使用上下文方式 2 使用hooks 钩子函数 
-function Header() {
-	  let ctx = useContext(myContext) // useContext参数就是我们定义的上下文对象 
-		return <div style ={{color:ctx.color}}>
-				      我是头部组件
-					  </div>
-			
-}
+const Tiltle1 =memo2(Tiltle)
 
-
- 
-
-render(<Page/>,window.root)
+render(<My/>,document.getElementById('root'))
