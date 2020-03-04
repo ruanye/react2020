@@ -1,11 +1,28 @@
-import React from 'react'
+import React,{useState,useEffect} from 'react'
 import {render} from 'react-dom'
-import Logger from './high/Logger'
-import Count from './high2/Count'
-import Email from './high2/Email'
+import axios from 'axios'
+// 自定义hooks 公用的函数  use开头  自定义ajax 
+function useAjax(url){
+	let [data,setdata] = useState(null)
+	  useEffect(()=>{
+	    let fetchData = async ()=>{
+				 let res =  await axios.get(url)
+				 setdata(res.data)
+			}
+			fetchData()
+	}
+,[url])
+	  
+   return data
+}
+function App(){
+  let data =  useAjax('http://localhost:3000/user.json')
 
-
-render(<>
-   <Count/>
-	 <Email/>
-</>,window.root)
+	if(data===null){
+		return <div>loading...</div>
+	}
+	return <div>{data.lilei}</div>
+}
+render(<App>
+  
+</App>,window.root)

@@ -1,5 +1,6 @@
  import React from 'react'
- export default function(Com,key){//key本地存储的key  
+ // hooks 去解决了 
+ export default function(Com,key){ //key本地存储的key  Com组件是useAjax  
 	  return class extends React.Component{
 		 constructor(props){
 			 super(props)
