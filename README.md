@@ -216,3 +216,6 @@ function App1() {
 }
 export default App1;
 ```
+## react 路由
+1 下载  `npm install react-router-dom`
+

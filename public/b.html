@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+</head>
+<body>
+	 <a href="#a">跳转到a页面</a>
+	 <a href="#b"> 跳转到b页面</a>
+	 <div id="container"></div>
+	 <script>
+		 console.log(window.container ===container)
+    //监听hash改变的事件  hash实现单页应用页面的原理   
+		 window.addEventListener('hashchange',function(){
+			console.log(location.hash)
+			let page  = location.hash.slice(1)
+			container.innerHTML= `这是${page}页面`
+		})
+	 </script>
+</body>
+</html>
